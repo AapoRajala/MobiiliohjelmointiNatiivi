@@ -30,7 +30,7 @@ fun WeatherScreen(viewModel: WeatherViewModel, modifier: Modifier = Modifier) {
         TextField(
             value = viewModel.city,
             onValueChange = { viewModel.updateCity(it) },
-            label = { Text("Syötä kaupunki") },
+            label = { Text("Syötä kaupunki ") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true
         )
