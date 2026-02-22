@@ -1,32 +1,32 @@
 import java.util.Properties
-import java.io.FileInputStream
 
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ksp)
 }
 
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
+val openWeatherApiKey = localProperties.getProperty("OPENWEATHER_API_KEY") ?: ""
+
 android {
-    namespace = "com.example.viikko5"
+    namespace = "com.example.weather_app"
     compileSdk = 36
 
-    val localProperties = Properties()
-    val localPropertiesFile = rootProject.file("local.properties")
-    if (localPropertiesFile.exists()) {
-        localProperties.load(FileInputStream(localPropertiesFile))
-    }
-    val openWeatherApiKey = localProperties.getProperty("OPENWEATHER_API_KEY") ?: ""
-
     defaultConfig {
-        applicationId = "com.example.viikko5"
+        applicationId = "com.example.weather_app"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
+        
         buildConfigField("String", "OPENWEATHER_API_KEY", "\"$openWeatherApiKey\"")
     }
 
@@ -65,11 +65,12 @@ dependencies {
     
     // Retrofit & Gson
     implementation(libs.retrofit)
-    implementation(libs.retrofit.converter.gson)
-    implementation(libs.gson)
-    
-    // Coroutines
-    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.retrofit.gson)
+
+    // Room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
